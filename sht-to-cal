@@ -8,21 +8,22 @@ function shttocal() {
   var shtname = sheet.getName();
   var startRow = 1;  // First row of data to process
   var numRows = sheet.getLastRow();   // Number of rows to process
-  //var dataRange = sheet.getRange("A1:E1"); // top left cell to bottom right but no selection necessary
+  // var dataRange = sheet.getRange("A1:E1"); // top left cell to bottom right but no selection necessary
   var dataRange = sheet.getActiveRange(); // use this for selected cells (active cells)
   var data = dataRange.getValues();
-  var cal = CalendarApp.createCalendar(shtname, {summary: 'A calendar exported from a google sheet', timeZone: 'Australia/Sydney', selected: true});
-  // creates new calendar for exported sheet
-  for (i in data) {
-    var row = data[i];
-    var title = row[0];  // First column
-    var desc = row[1];       // Second column
-    var tstart = row[2];
-    var tstop = row[3];
-    var loc = row[4];
-    //cal.createEvent(title, new Date("March 3, 2010 08:00:00"), new Date("March 3, 2010 09:00:00"), {description:desc,location:loc});
-    cal.createEvent(title, tstart, tstop, {description:desc,location:loc}); // use date format mm/dd/yyyy hh:mm:ss
- }
-}
-
+  var cal = CalendarApp.createCalendar(shtname, {summary: 'A calendar exported from a google sheet', timeZone: 'Australia/Sydney', selected: true}); //get calendar Id from specific calendar settings
+  for (var n = 0; n < data.length; n++){
+    if (data[n][5] == 'include' || data[n][5] == 'also include'){ // selects rows to include based on strings in the 5th column
+        var row = data[n];
+        var title = row[0];      // First column
+        var desc = row[1];       // Second column
+        var tstart = row[2];
+        var tstop = row[3];
+        var loc = row[4];
+        // cal.createEvent(title, new Date("March 3, 2010 08:00:00"), new Date("March 3, 2010 09:00:00"), {description:desc,location:loc});
+        cal.createEvent(title, tstart, tstop, {description:desc,location:loc}); // use date format mm/dd/yyyy hh:mm:ss
+      }
+    }
+  }
 // credit to OUseful
+
