@@ -5,6 +5,7 @@ function onOpen() {
 }
 function shttocal() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet();
+  var shtname = sheet.getName();
   var startRow = 1;  // First row of data to process
   var numRows = sheet.getLastRow();   // Number of rows to process
   //var dataRange = sheet.getRange("A1:E1"); // top left cell to bottom right but no selection necessary
