@@ -10,7 +10,8 @@ function shttocal() {
   //var dataRange = sheet.getRange("A1:E1"); // top left cell to bottom right but no selection necessary
   var dataRange = sheet.getActiveRange(); // use this for selected cells (active cells)
   var data = dataRange.getValues();
-  var cal = CalendarApp.getCalendarById("bfpattufjeg3of3u17r9fch6g8@group.calendar.google.com"); //get calendar Id from specific calendar settings
+  var cal = CalendarApp.createCalendar('Exported from Sheet', {summary: 'A calendar exported from a google sheet', timeZone: 'Australia/Sydney', selected: true});
+  // creates new calendar for exported sheet
   for (i in data) {
     var row = data[i];
     var title = row[0];  // First column
