@@ -13,7 +13,7 @@ function shttocal() {
   var data = dataRange.getValues();
   var cal = CalendarApp.createCalendar(shtname, {summary: 'A calendar exported from a google sheet', timeZone: 'Australia/Sydney', selected: true}); //get calendar Id from specific calendar settings
   for (var n = 0; n < data.length; n++){
-    if (data[n][5] == 'include' || data[n][5] == 'also include'){ // selects rows to include based on strings in the 5th column
+    if (data[n][5].indexOf('include') || data[n][5].indexOf('also include')){ // selects rows to include based on strings in the 5th column - UPDATE: now selects partial strings in code - use data[n][5] == 'include' for exact match
         var row = data[n];
         var title = row[0];      // First column
         var desc = row[1];       // Second column
