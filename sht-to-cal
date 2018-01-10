@@ -1,29 +1,56 @@
 function onOpen() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = SpreadsheetApp.getActiveSpreadsheet();
   var menuEntries = [ {name: "Export to Calendar", functionName: "shttocal"} ];
-  ss.addMenu("Scripts", menuEntries);
+  sheet.addMenu("Scripts", menuEntries);
 }
+
 function shttocal() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet();
   var shtname = sheet.getName();
   var startRow = 1;  // First row of data to process
   var numRows = sheet.getLastRow();   // Number of rows to process
-  // var dataRange = sheet.getRange("A1:E1"); // top left cell to bottom right but no selection necessary
+  //var dataRange = sheet.getRange("A1:E1"); // top left cell to bottom right but no selection necessary
   var dataRange = sheet.getActiveRange(); // use this for selected cells (active cells)
   var data = dataRange.getValues();
   var cal = CalendarApp.createCalendar(shtname, {summary: 'A calendar exported from a google sheet', timeZone: 'Australia/Sydney', selected: true}); //get calendar Id from specific calendar settings
+  // use getColumnNrByName() to find column number based on string
+  
+  var titleCol = getColumnNrByName('title');
+  var descCol = getColumnNrByName('description');
+  var tstartCol = getColumnNrByName('tstart');
+  var tstopCol = getColumnNrByName('tstop');
+  var idCol = getColumnNrByName('ID');
+  var locCol = getColumnNrByName('location');
+  
   for (var n = 0; n < data.length; n++){
-    if (data[n][5].indexOf('include') || data[n][5].indexOf('also include')){ // selects rows to include based on strings in the 5th column - UPDATE: now selects partial strings in code - use data[n][5] == 'include' for exact match
+    if (data[n][idCol].indexOf("All") > -1 || data[n][idCol].indexOf("B") > -1){ // 
         var row = data[n];
-        var title = row[0];      // First column
-        var desc = row[1];       // Second column
-        var tstart = row[2];
-        var tstop = row[3];
-        var loc = row[4];
+        var title = row[titleCol];  // First column
+        var desc = row[descCol];       // Second column
+        var tstart = row[tstartCol];
+        var tstop = row[tstopCol];
+        var loc = row[locCol];
         // cal.createEvent(title, new Date("March 3, 2010 08:00:00"), new Date("March 3, 2010 09:00:00"), {description:desc,location:loc});
         cal.createEvent(title, tstart, tstop, {description:desc,location:loc}); // use date format mm/dd/yyyy hh:mm:ss
+    }
+  }
+}
+// credit to OUseful
+
+
+function getColumnNrByName(name) {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var range = sheet.getRange(1, 1, 1, sheet.getMaxColumns());
+  var values = range.getValues();
+  
+  for (var row in values) {
+    for (var col in values[row]) {
+      if (values[row][col] == name) {
+        return parseInt(col);
       }
     }
   }
-// credit to OUseful
-
+  
+  throw 'failed to get column by name';
+}
+// modified code based on code by: https://gist.github.com/printminion
